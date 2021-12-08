@@ -2134,9 +2134,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
     article: Object
-  },
-  mounted: function mounted() {
-    console.log(this.article);
   }
 });
 
@@ -2162,6 +2159,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -2169,19 +2191,52 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      articles: {}
+      articles: {},
+      categories: {},
+      sort_field: 'title',
+      sort_direction: 'asc',
+      category_id: '',
+      search: ''
     };
   },
   mounted: function mounted() {
+    var _this = this;
+
+    axios.get('/api/categories').then(function (response) {
+      _this.categories = response.data.data;
+    });
     this.getArticles();
   },
+  watch: {
+    category_id: function category_id(value) {
+      this.getArticles();
+    },
+    search: function search(value) {
+      console.log(value);
+      this.getArticles();
+    }
+  },
   methods: {
+    change_sort: function change_sort(field) {
+      if (this.sort_field === field) {
+        this.sort_direction = this.sort_direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sort_field = field;
+        this.sort_direction = 'asc';
+      }
+
+      this.getArticles();
+    },
     getArticles: function getArticles() {
-      var _this = this;
+      var _this2 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/api/articles?page=' + page).then(function (response) {
-        _this.articles = response.data;
+      axios.get('/api/articles?page=' + page + '&category_id=' + this.category_id + '&sort_field=' + this.sort_field + '&sort_direction=' + this.sort_direction + '&search=' + this.search).then(function (response) {
+        _this2.articles = response.data;
+      })["catch"](function (error) {
+        _this2.$router.push({
+          name: '404'
+        });
       });
     }
   }
@@ -42635,6 +42690,129 @@ var render = function () {
     },
     [
       _c("h2", { staticClass: "text-4xl" }, [_vm._v("Articles")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "block" }, [
+        _c("div", { staticClass: "row-auto" }, [
+          _c("div", { staticClass: "col-2" }, [
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.category_id,
+                    expression: "category_id",
+                  },
+                ],
+                staticClass: "text-gray-700",
+                on: {
+                  change: function ($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function (o) {
+                        return o.selected
+                      })
+                      .map(function (o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.category_id = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                },
+              },
+              [
+                _c("option", { attrs: { selected: "", value: "" } }, [
+                  _vm._v("-- select category --"),
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.categories, function (category) {
+                  return _c("option", { domProps: { value: category.id } }, [
+                    _vm._v(_vm._s(category.title)),
+                  ])
+                }),
+              ],
+              2
+            ),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-2" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search,
+                  expression: "search",
+                },
+              ],
+              staticClass:
+                "shadow appearance-none border rounded w-25 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
+              domProps: { value: _vm.search },
+              on: {
+                input: function ($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.search = $event.target.value
+                },
+              },
+            }),
+          ]),
+        ]),
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "flex" }, [
+        _c("div", [
+          _c(
+            "a",
+            {
+              attrs: { href: "#" },
+              on: {
+                click: function ($event) {
+                  $event.preventDefault()
+                  return _vm.change_sort("title")
+                },
+              },
+            },
+            [_vm._v("Title")]
+          ),
+          _vm._v(" "),
+          this.sort_field == "title" && this.sort_direction == "asc"
+            ? _c("span", [_vm._v("↑")])
+            : _vm._e(),
+          _vm._v(" "),
+          this.sort_field == "title" && this.sort_direction == "desc"
+            ? _c("span", [_vm._v("↓")])
+            : _vm._e(),
+        ]),
+        _vm._v(" "),
+        _c("div", [
+          _c(
+            "a",
+            {
+              staticClass: "pl-3",
+              attrs: { href: "#" },
+              on: {
+                click: function ($event) {
+                  $event.preventDefault()
+                  return _vm.change_sort("published_at")
+                },
+              },
+            },
+            [_vm._v("Published At")]
+          ),
+          _vm._v(" "),
+          this.sort_field == "published_at" && this.sort_direction == "asc"
+            ? _c("span", [_vm._v("↑")])
+            : _vm._e(),
+          _vm._v(" "),
+          this.sort_field == "published_at" && this.sort_direction == "desc"
+            ? _c("span", [_vm._v("↓")])
+            : _vm._e(),
+        ]),
+      ]),
       _vm._v(" "),
       _vm._l(_vm.articles.data, function (article) {
         return _c("ArticleItem", {

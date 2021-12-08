@@ -11,7 +11,24 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        return ArticleResource::collection(Article::paginate());
+        $sortField = request('sort_field', 'created_at');
+        if (!in_array($sortField, ['title', 'published_at'])) {
+            $sortField = 'published_at';
+        }
+        $sortDirection = request('sort_direction', 'desc');
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
+        $articles = Article::when(request('category_id', '') != '', function ($q) {
+                $q->where('category_id', request('category_id'));
+            })
+            ->when(request('search', '') != '', function ($q) {
+                $q->where('title', 'LIKE', '%' . request('search') . '%');
+            })
+            ->orderBy($sortField, $sortDirection)->paginate();
+
+        return ArticleResource::collection($articles);
     }
 
     public function show(Article $article)
