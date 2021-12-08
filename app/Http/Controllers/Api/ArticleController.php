@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
+    /**
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index()
     {
         $sortField = request('sort_field', 'created_at');
@@ -31,6 +34,10 @@ class ArticleController extends Controller
         return ArticleResource::collection($articles);
     }
 
+    /**
+     * @param Article $article
+     * @return ArticleResource
+     */
     public function show(Article $article)
     {
         return (new ArticleResource($article));

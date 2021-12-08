@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    /**
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index()
     {
         return CategoryResource::collection(Category::all());
