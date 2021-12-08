@@ -13,4 +13,9 @@ class ArticleController extends Controller
     {
         return ArticleResource::collection(Article::paginate());
     }
+
+    public function show(Article $article)
+    {
+        return (new ArticleResource($article));
+    }
 }

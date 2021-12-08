@@ -21,9 +21,9 @@ class ArticleResource extends JsonResource
             'image'        => $this->main_img,
             'content'      => $this->content,
             'category'     => (new CategoryResource($this->category)),
-            'author_id'    => (new AuthorResource($this->author)),
+            'author'       => (new AuthorResource($this->author)),
             'tags'         => TagResource::collection($this->tags),
-            'published_at' => $this->published_at->diffForHumans()
+            'published_at' => $this->published_at
         ];
     }
 }
